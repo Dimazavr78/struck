@@ -1,0 +1,1240 @@
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <cstring>
+#include <iomanip>
+#include <windows.h>
+#include <ctime>
+
+#define write file.write(reinterpret_cast < char * > ( & data), sizeof(data))
+#define read file.read(reinterpret_cast < char * > ( & data), sizeof(data))
+#define CLS system("CLS");
+using namespace std;
+int Correct_Number(string);
+class DataType {
+public:
+    char animals[256], natural_zone[256];
+    int money;
+    int cnt;
+
+    DataType() {
+        string ad = "Пусто";
+        unsigned int i;
+        for (i = 0; i < ad.size(); ++i)
+            animals[i] = natural_zone[i] = ad[i];
+        animals[i] = natural_zone[i] = '\0';
+        money = 0;
+        cnt = 0;
+    };
+
+    DataType(string ANIMALS, string NATURAL, int MONEY, int CNT) {
+        unsigned int i;
+        for (i = 0; i < ANIMALS.size(); ++i)
+            animals[i] = ANIMALS[i];
+        animals[i] = '\0';
+        for (i = 0; i < NATURAL.size(); ++i)
+            natural_zone[i] = NATURAL[i];
+        natural_zone[i] = '\0';
+        money = MONEY;
+        cnt = CNT;
+    };
+    // Функция вывода одной записи из списка
+    void show_data(int i) {
+        printf("%-6d|%-20.20s|%-26.26s|%23d|%21d|", i, animals, natural_zone, money, cnt);
+        cout << "\n------|--------------------|-------------------------- | ----------------------- | --------------------- | \n";
+    }
+
+    void add_data_random() {
+            unsigned int i;
+            string mn = "a", count = "a", zona;
+            _flushall();
+            for (i = 0; i < 5; ++i)
+                animals[i] = 'а' + rand() % 26;
+            natural_zone[i+1] = '\0';
+            _flushall();
+            standartview(animals);
+            for (i = 0; i < 5; ++i)
+                natural_zone[i] = 'а' + rand() % 26;
+            natural_zone[i+1] = '\0';
+            standartview(natural_zone);
+           
+            money = rand() % 100;
+
+            cnt = rand() % 100;
+;    }
+    // Функция добавления/изменения данных объекта
+    void add_data() {
+        unsigned int i;
+        string mn = "a", count = "a", anim, zona;
+        cout << " ---------------------------------\n";
+        cout << " | Добавление/изменение данных |\n";
+        cout << " ---------------------------------\n\n";
+      
+            // Очищение буфера
+            _flushall();
+            cout << "Введите название животного: ";
+            // Удаление символа \n
+            cin.ignore();
+            getline(cin, anim);
+            for (i = 0; i < anim.size(); ++i)
+                animals[i] = anim[i];
+            animals[i] = '\0';
+
+            standartview(animals);
+            cout << "Введите название природной зоны: ";
+            getline(cin, zona);
+            for (i = 0; i < zona.size(); ++i)
+                natural_zone[i] = zona[i];
+            natural_zone[i] = '\0';
+
+            standartview(natural_zone);
+            // Проверка на корректный ввод числа
+            while (Correct_Number(mn) == -1) {
+                cout << "Введите затраты в месяц на животное: ";
+                cin >> mn;
+            }
+            // Преобразование переменной объекта string в тип int
+            money = stoi(mn);
+            // Проверка на корректный ввод числа
+            while (Correct_Number(count) == -1) {
+                cout << "Введите количество животных: ";
+                cin >> count;
+            }
+            // Преобразование переменной объекта string в тип int
+            cnt = stoi(count);
+        
+    }
+    // Функция добавление новых элементов в класс
+    void add_data(string ad, string nd, int mn, int cn) {
+        for (unsigned int i = 0; i < ad.size(); ++i)
+            animals[i] = ad[i];
+        for (unsigned int i = 0; i < nd.size(); ++i)
+            natural_zone[i] = nd[i];
+        money = mn;
+        cnt = cn;
+    }
+    void add_data_random(string ad, string nd, int mn, int cn) {
+        for (unsigned int i = 0; i < ad.size(); ++i)
+            animals[i] = ad[i];
+        for (unsigned int i = 0; i < nd.size(); ++i)
+            natural_zone[i] = nd[i];
+        money = mn;
+        cnt = cn;
+    }
+
+    // Функция приведения к стандартному виду, если была передана строка char
+    void standartview(char* ad) {
+        int n = 0;
+        while ((ad[n] != '\0' && ad[n] != '\n')) {
+            // Изменение больших букв на маленькие
+            if ((ad[n] >= 'А') && (ad[n] <= 'Я') && (ad[n] != ' '))
+                ad[n] = ad[n] + 32;
+            n += 1;
+        }
+    }
+    // Функция приведения к стандартному виду, если была передана строка string
+    void standartview(string ad) {
+        int n = 0;
+        while (ad[n] != '\0' && ad[n] != '\n') {
+            // Изменение больших букв на маленькие
+            if ((ad[n] >= 'А') && (ad[n] <= 'Я') && (ad[n] != ' '))
+                ad[n] = ad[n] + 32;
+            n += 1;
+        }
+    }
+    // Функция проверки на равенство двух натуральных зон
+    int equzone(char* zone) {
+        int i = 0, n = 0;
+        while (zone[i] != '\0' && zone[i] != '\n' && natural_zone[i] !='\n' && natural_zone[i] != '\0') {
+            if ((natural_zone[i] != zone[i]) && (natural_zone[i] !=
+                (zone[i] + 32))) {
+                n = 1;
+                break;
+            }
+            i++;
+        }
+        return (!n) ? 0 : 1;
+    }
+    // Функция вывода затрат на животных
+    long long moncnt() {
+        return money * cnt;
+    }
+    // Функция проверки на равенство двух животных
+    int equanimal(string username) {
+        unsigned int i = 0, n = 0;
+        while (i < username.size() && animals[i] != '\0') {
+            if ((animals[i] != username[i]) && (animals[i] != (username[i] + 32))) {
+                n = 1;
+                break;
+            }
+            i++;
+        }
+        return (!n) ? 0 : 1;
+    }
+    // Функция сравнение животных в алфавитном порядке
+    bool sravnenieAnimals(char* username) {
+        for (int i = 0; username[i] != '\n' && username[i] != '\0' &&
+            animals[i] != '\n' && animals[i] != '\0'; ++i)
+            if (username[i] > animals[i])
+                return 0;
+        return 1;
+    }
+    // Функция сравнение натуральных зон в алфавитном порядке
+    bool sravnenieZona(char* username) {
+        for (int i = 0; username[i] != '\n' && username[i] != '\0' &&
+            natural_zone[i] != '\n' && natural_zone[i] != '\0'; ++i)
+            if (username[i] > natural_zone[i])
+                return 0;
+        return 1;
+    }
+    // Функция сравнение затрат
+    bool sravnenieMoney(int mn) {
+        return ((mn > money) ? 0 : 1);
+    }
+    // Функция сравнение количества
+    bool sravnenieCount(int count) {
+        return ((count > cnt) ? 0 : 1);
+    }
+};
+// Объявление двусвязного списка
+struct node {
+    DataType data;
+    node* next, * prev;
+};
+// Объявление двусвязного списка, в котором содержится начало и конец
+
+struct list {
+    node* begin, * end;
+};
+// Функция обнуление начала и конца двусвязного списка
+void make_null(list* spisok) {
+    spisok->begin = spisok->end = NULL;
+}
+// Функция добавление элемента в начало файла
+list add_begin(list spisok, DataType data) {
+    node* temp = new node;
+    temp->data = data; // Присваивание содержимого списка в переменную temp
+    temp->next = spisok.begin;
+    temp->prev = NULL; // Обнуление предыдущего элемента
+    // Проверка на наличие данных в файле
+    if (spisok.begin) {
+        spisok.begin->prev = temp;
+    }
+    else {
+        spisok.end = temp;
+    }
+    spisok.begin = temp;
+    return spisok;
+}
+// Функция добавление элемента в конец файла
+list add_end(list spisok, DataType data) {
+    node* temp = new node;
+    temp->data = data; // Присваивание содержимого списка в переменную temp
+    temp->prev = spisok.end;
+    temp->next = NULL; // Обнуление следующего элемента
+    // Проверка на наличие данных в файле
+    if (spisok.end) {
+        spisok.end->next = temp;
+    }
+    else {
+        spisok.begin = temp;
+    }
+    spisok.end = temp;
+    return spisok;
+}
+// Объявление функция вывода списка по возрастанию
+void ShowAllBegin(list spisok, int endsize) {
+    int i = 0, noteinstring = 0, n, k;
+    char menu = 0; // Переменная меню списка
+    string note;
+    // Проверка на наличие записей в списке
+
+    if (!spisok.end) {
+        cout << "Список пуст...\n";
+        system("pause");
+    }
+    else {
+        do {
+            CLS;
+            cout << "Введите количество записей на одной странице: ";
+            cin >> note;
+        } while (Correct_Number(note) == -1);
+        // Алгоритм вывода
+        while (i < endsize) {
+            n = 0;
+            CLS;
+            cout << " ID | Животное | Природнаязона | Затраты за 1 животное | Количество животных | \n";
+            cout << "------|--------------------|-------------------------- | ---------------------- - | -------------------- - | \n";
+            // Цикл вывода до конца списка
+            while (spisok.end && i < endsize) {
+                i += 1;
+                // Вызов функции класса + вывод содержимого записи
+                spisok.end->data.show_data(i);
+                if (i != endsize) spisok.end = spisok.end->prev;
+                n += 1;
+                if (n == noteinstring) {
+                    n = 0;
+                    break;
+                }
+            }
+            if (noteinstring >= endsize) {
+                menu = 0;
+                do {
+                    cout << "\"x\" - выход в главное меню\n";
+                    cin >> menu;
+                } while (menu != 'x' && menu != 'х');
+                return;
+            }
+            else if (i <= noteinstring) {
+                do {
+                    cout << "\"x\" - выход в главное меню ||\">\" - переход на следующую страницу\n";
+                    cin >> menu;
+                } while (menu != 'x' && menu != 'х' && menu !=
+                    '>');
+                switch (menu) {
+                case 'x':
+                    return;
+                case 'х':
+                    return;
+                case '>':
+                    break;
+                default:
+                    break;
+                }
+            }
+            else if (i == endsize) {
+                do {
+                    cout << "\"<\" - переход на предыдущую страницу || \"x\" - выход в главное меню\n";
+                    cin >> menu;
+                } while (menu != 'x' && menu != 'х' && menu != '<');
+                switch (menu) {
+                case 'x':
+                    return;
+                case 'х':
+                    return;
+                case '<': {
+                    if (noteinstring == 1) {
+                        k = 2;
+                        i -= k;
+                        while (k != 1 && spisok.end) {
+                            --k;
+                            spisok.end = spisok.end->next;
+                        }
+                    }
+                    else {
+                        if (i % noteinstring == 0) {
+                            k = 2 * noteinstring;
+                            i -= k;
+                            while (k != 1 && spisok.end) {
+                                --k;
+                                spisok.end = spisok.end->next;
+                            }
+                        }
+                        else {
+                            k = noteinstring + (i %
+                                noteinstring);
+                            i -= k;
+                            while (k != 1 && spisok.end) {
+                                --k;
+                                spisok.end = spisok.end->next;
+                            }
+                        }
+                    }
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+            else if (i <= endsize) {
+                do {
+                    cout << "\"<\" - переход на предыдущую страницу || \"x\" - выход в главное меню || \">\" - переход на следующую страницу\n";
+                    cin >> menu;
+                } while (menu != 'x' && menu != 'х' && menu != '<' && menu != '>');
+                switch (menu) {
+                case 'x':
+                    return;
+                case 'х':
+                    return;
+                case '>':
+                    break;
+                case '<': {
+                    k = 2 * noteinstring;
+                    i -= k;
+                    while (k && spisok.end) {
+                        --k;
+                        spisok.end =
+                            spisok.end->next;
+                    }
+                }
+                default:
+                    break;
+                }
+            }
+        }
+    }
+}
+// Объявление функции вывода списка по убыванию
+void ShowAllEnd(list spisok, int endsize) {
+    int i = 0, noteinstring = 0, n, k;
+    char menu = 0; // Переменная меню списка
+    string note;
+    // Проверка на наличие записей в списке
+    if (!spisok.begin) {
+        cout << "Список пуст...\n";
+        system("pause");
+    }
+    else {
+        do {
+            CLS;
+            cout << "Введите количество записей на одной странице: ";
+            cin >> note;
+        } while (Correct_Number(note) == -1);
+        noteinstring = stoi(note);
+        while (i < endsize) {
+            n = 0;
+            CLS;
+            cout << " ID | Животное | Природная	зона | Затраты за 1 животное | Количество животных | \n";
+            cout << "------|--------------------|-------------------------- | ---------------------- - | -------------------- - | \n";
+            while (spisok.begin && i < endsize) {
+                i += 1;
+                // Вызов функции содержимого
+                spisok.begin->data.show_data(endsize - i + 1);
+                if (i != endsize) spisok.begin = spisok.begin->next;
+                n += 1;
+                if (n == noteinstring) {
+                    n = 0;
+                    break;
+                }
+            }
+            if (noteinstring >= endsize) {
+                menu = 0;
+                do {
+                    cout << "\"x\" - выход в главное меню\n";
+                    cin >> menu;
+                } while (menu != 'x' && menu != 'х');
+                return;
+            }
+            else if (i <= noteinstring) {
+                do {
+                    cout << "\"x\" - выход в главное меню ||\">\" - переход на следующую страницу\n";
+                    cin >> menu;
+                } while (menu != 'x' && menu != 'х' && menu !=
+                    '>');
+                switch (menu) {
+                case 'x':
+                    return;
+                case 'х':
+                    return;
+                case '>':
+                    break;
+                default:
+                    break;
+                }
+            }
+            else if (i == endsize) {
+                do {
+                    cout << "\"<\" - переход на предыдущую страницу || \"x\" - выход в главное меню\n";
+                    cin >> menu;
+                } while (menu != 'x' && menu != 'х' && menu != '<');
+                switch (menu) {
+                case 'x':
+                    return;
+                case 'х':
+                    return;
+                case '<': {
+                    if (noteinstring == 1) {
+                        k = 2;
+                        i -= k;
+                        while (k != 1 && spisok.begin) {
+                            --k;
+                            spisok.begin = spisok.begin->prev;
+                        }
+                    }
+                    else {
+                        if (i % noteinstring == 0) {
+                            k = 2 * noteinstring;
+                            i -= k;
+                            while (k != 1 && spisok.begin) {
+                                --k;
+                                spisok.begin = spisok.begin->prev;
+                            }
+                        }
+                        else {
+                            k = noteinstring + (i %
+                                noteinstring);
+                            i -= k;
+                            while (k != 1 && spisok.begin) {
+                                --k;
+                                spisok.begin = spisok.begin->prev;
+                            }
+                        }
+                    }
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+            else if (i <= endsize) {
+                do {
+                    cout << "\"<\" - переход на предыдущую страницу || \"x\" - выход в главное меню || \">\" - переход на следующую страницу\n";
+                    cin >> menu;
+                } while (menu != 'x' && menu != 'х' && menu != '<' && menu != '>');
+                switch (menu) {
+                case 'x':
+                    return;
+                case 'х':
+                    return;
+                case '>':
+                    break;
+                case '<': {
+                    k = 2 * noteinstring;
+                    i -= k;
+                    while (k && spisok.begin) {
+                        --k;
+                        spisok.begin = spisok.begin->prev;
+                    }
+                }
+                default:
+                    break;
+                }
+            }
+        }
+    }
+}
+// Объявление функции счётчика количества записей в списке
+int CountData(list spisok) {
+    int i = 0;
+    if (!spisok.begin)
+        return 0;
+    else {
+        if (!spisok.end)
+            cout << "Список пуст...\n";
+        else
+            while (spisok.begin) {
+                ++i;
+                spisok.begin = spisok.begin->next;
+            }
+    }
+    return i;
+}
+// Объявление функции записи содержимого списка в файл
+void WriteSpisok(list spisok, string file_name) {
+    DataType data;
+    fstream file;
+    char name[256];
+    unsigned int i;
+    for (i = 0; i < file_name.size(); ++i)
+        name[i] = file_name[i];
+    name[i] = '\0';
+    remove(name); // Удаление файла с названием "name"
+
+    file.open(file_name, ios::binary | ios::app | ios::out | ios::in);
+    while (spisok.begin) {
+        data = spisok.begin->data;
+
+        write;
+        spisok.begin = spisok.begin->next;
+    }
+    file.close(); // Закрытие файла
+}
+// Объявление функции записи содержимого файла в список
+void ReadFile(list& spisok, string file_name) {
+    DataType data;
+    fstream file;
+
+    file.open(file_name, ios::binary | ios::app | ios::out | ios::in);
+    read;
+    // Запись данных файла в список
+    while (!file.eof()) {
+        spisok = add_end(spisok, data);
+        read;
+    }
+}
+// Объявление функции удаления списка
+list DellSpisok(list spisok, string file_name) {
+    node* temp;
+    char name[256];
+    unsigned int i;
+    for (i = 0; i < file_name.size(); ++i)
+        name[i] = file_name[i];
+    name[i] = '\0';
+    remove(name); // Удаление файла с названием "name"
+    // Проверка на наличие записей в списке
+    if (!spisok.begin) {
+        cout << "В списке нет данных, которые можно удалить!";
+    }
+    else {
+        while (spisok.begin) {
+            temp = spisok.begin;
+            spisok.begin = spisok.begin->next;
+            delete(temp);
+        }
+    }
+    list newspisok; // Объявление переменной нового списка
+    make_null(&newspisok); // Вызов функции обнуление начала и конца списка
+    return newspisok; // Возврат пустого списка
+}
+// Объявление функции ввода названия файла
+string FILE_NAME() {
+    string file_name;
+    cout << "Введите путь к файлу:\nПуть к файлу должен находится в одной и той же папке, где и сам проект!\nПуть: ";
+    cin >> file_name;
+    file_name += ".dat";
+    return file_name;
+}
+// Объявление функции "определения количества животных в природной зоне
+void FindAnimals(list spisok)
+
+{
+    char zone[256];
+    long long count = 0;
+    cout << " ---------------------------------\n";
+    cout << " | Определение кол-ва животных |\n";
+    cout << " ---------------------------------\n\n";
+    cout << "Введите название природной зоны: ";
+    cin >> zone;
+    for (int i = 0; i < 256; ++i)
+        if (zone[i] == '\n') {
+            zone[i] = '\0';
+            break;
+        }
+
+    while (spisok.begin) {
+        if (spisok.begin->data.equzone(zone) == 0) {
+            count += spisok.begin->data.cnt;
+        }
+        spisok.begin = spisok.begin->next;
+    }
+    cout << "Количество животных в природной зоне '" << zone << "' равно" << count << endl;
+}
+// Объявление функции затрат на животных в опр. природной зоне
+void Money_Natural_Zone(list spisok) {
+    char zone[256];
+    long long allmoney = 0;
+    cout << "Введите название природной зоны: ";
+    cin >> zone;
+    for (int i = 0; i < 256; ++i)
+        if (zone[i] == '\n') {
+            zone[i] = '\0';
+            break;
+        }
+
+    while (spisok.begin) {
+        if (spisok.begin->data.equzone(zone) == 0) {
+            allmoney += spisok.begin->data.moncnt();
+        }
+        spisok.begin = spisok.begin->next;
+    }
+    cout << "Затраты на животных природной зоны '" << zone << "' равно:" << allmoney << " рубля(-ей)\n";
+}
+// Объявление функции для корректного ввода числа пользователем
+int Correct_Number(string charid) {
+    string s1 = "0123456789";
+    int n = 0;
+    for (unsigned int i = 0; i < charid.size(); i++) {
+        n = 0;
+        for (int j = 0; j < 10; ++j)
+            if (charid[i] == s1[j]) {
+                n = 1;
+                break;
+            }
+    }
+    return ((n != 1) ? -1 : 0);
+}
+// Объявление функции удаление одной записи из списка
+void Delete_One(list& spisok, int* endsize, string file_name) {
+    DataType data;
+    char menu = 0;
+    string charid;
+    int i = 0, ID;
+    bool ok;
+    node* current = spisok.begin;
+    do {
+        CLS;
+        cout << " ----------------------\n";
+        cout << " | Удаление данных |\n";
+        cout << " ----------------------\n\n";
+        cout << "Удалить поле по ID или по названию животного?\n ID -введите \"I\" || По названию - \"N\" || \"X\" - отменить удаление\nВвод: ";
+        cin >> menu;
+    } while (menu != 'I' && menu != 'N' && menu != 'х' && menu != 'Х' &&
+        menu != 'x' && menu != 'X');
+    menu = (menu == 'x') ? 'X' : (menu == 'х') ? 'X' : (menu == 'Х') ?
+        menu = 'X' : menu; // Приведение символа 'X' к стандартному виду, иначе переменная menu не меняется
+    switch (menu) {
+    case 'I': {
+        ok = 0;
+        i = 0;
+        if (!current) {
+            cout << "В списке нет данных, которые можно	удалить...\n";
+            break;
+        }
+        else {
+            do {
+                CLS;
+                cout << " ----------------------\n";
+                cout << " | Удаление данных |\n";
+                cout << " ----------------------\n\n";
+                cout << "Введите ID животного, которого хотите удалить(ID животных можно посмотреть в списке всех животных, если вы забыли,то введите - ) : ";
+                cin >> charid;
+                if (charid == "-") ShowAllBegin(spisok, *endsize);
+            } while (Correct_Number(charid) == -1);
+            ID = stoi(charid);
+            // Просмотр каждой записи списка
+            while (current && i <= *endsize) {
+                i++;
+                // Проверка на равенства текущего ID и ID, которое ввёл пользователь
+                if ((*endsize - i + 1) == ID) {
+                    ok = 1;
+
+                    if (current == spisok.begin || current ==
+                        spisok.end) {
+                        // Если запись всего одна, то идёт обнуление списка
+                        if (*endsize == 1) {
+                            make_null(&spisok);
+                        }
+
+                        if (current == spisok.begin &&
+                            *
+                            endsize != 1) {
+                            spisok.begin = spisok.begin ->next;
+                            spisok.begin->prev = NULL;
+                            delete current;
+                        }
+
+                        if (current == spisok.end && *endsize !=1) {
+                            spisok.end = spisok.end->prev;
+                            spisok.end->next = NULL;
+                            delete current;
+                        }
+                    }
+                    else {
+                        current->next->prev = current->prev;
+                        current->prev->next = current->next;
+                    }
+                    // Уменьшение количества записей на 1
+                    *endsize -= 1;
+                    break;
+                }
+                // Переход к следующей записи
+                current = current->next;
+            }
+            // Проверка на корректный ввод ID, которое ввёл пользователь
+            if (!ok)
+                cout << "ID не найдено...\n";
+            else
+                cout << "Успешное удаление записи...\n";
+            break;
+        }
+        break;
+    }
+    case 'N': {
+        CLS;
+        ok = 0;
+        string name;
+        cout << " ----------------------\n";
+        cout << " | Удаление данных |\n";
+        cout << " ----------------------\n\n";
+        cout << "Введите название животного: ";
+        cin >> name;
+        if (!spisok.end) {
+            cout << "В списке нет данных, которые можно удалить...\n";
+            break;
+        }
+        i = 0;
+        // Просмотр каждой записи списка
+        while (current && i <= *endsize) {
+            i++;
+
+            if (current->data.equanimal(name) == 0) {
+                ok = 1;
+
+                if (current == spisok.begin || current ==
+                    spisok.end) {
+                    // Если запись всего одна, то идёт обнуление списка
+                    if (*endsize == 1) {
+                        make_null(&spisok);
+                    }
+
+                    if (current == spisok.begin && *endsize !=
+                        1) {
+                        spisok.begin = spisok.begin->next;
+                        spisok.begin->prev = NULL;
+                        delete current;
+                    }
+
+                    if (current == spisok.end && *endsize != 1) {
+                        spisok.end = spisok.end->prev;
+                        spisok.end->next = NULL;
+                        delete current;
+                    }
+                }
+                
+                else {
+                    current->next->prev = current->prev;
+                    current->prev->next = current->next;
+                }
+                *endsize -= 1;
+                break;
+            }
+            // Переход к следующей записи
+            current = current->next;
+        }
+        // Проверка на корректный ввод названия животного, которое ввёл пользователь
+        if (!ok)
+            cout << "Такого животного не существует...\n";
+        else
+            cout << "Успешное удаление записи...\n";
+        break;
+    }
+    case 'X':
+        break;
+    default:
+        break;
+    }
+}
+// Определение функции изменения данных в записе списка (аргументы передаются по ссылке)
+void Edit_Data(list& spisok, int& endsize) {
+    int i = 0, ID; // i - текущий ID, ID - ID, которое ввёл пользователь
+    node* current = new node; // Определение + выделение памяти под список
+    current = spisok.begin; // присвание началу списка (в котором содержатся записи);
+    string charid;
+    DataType data;
+    do {
+        cout << "Введите номер записи (если хотите просмотреть запись, то введите \"-\"): ";
+        cin >> charid;
+        if (charid == "-") {
+            ShowAllBegin(spisok, endsize);
+            continue;
+        }
+    } while (Correct_Number(charid) == -1);
+    CLS; // Очистка консоли вывода
+    ID = stoi(charid);
+    // Проверка на наличие записей в списке
+    if (!spisok.begin) {
+        cout << "Список пуст...\n";
+        return;
+    }
+    // Проверка на наличие ID в списке
+    if (ID > endsize || ID < 1) {
+        cout << "Такого ID нет в списке...\n";
+        return;
+    }
+    // Цикл изменение данных
+    while (current && i <= endsize) {
+        i++;
+        if ((endsize - i + 1) == ID) {
+            // Функция класса ввода новых данных
+            data.add_data();
+            // Присваивание новых данных
+            current->data = data;
+            cout << "Данные были успешно изменены...\n";
+            return;
+        }
+        current = current->next;
+    }
+}
+// Объявление функции упорядочивания элементов по ID
+void OrderID(list& spisok, int& endsize) {
+    DataType data;
+    int i = 0, ID;
+    string charid;
+    node* current = new node;
+    current = spisok.end;
+    if (!current)
+        cout << "Список пуст...\n";
+    else {
+        do {
+            CLS;
+            cout << "Введите после какого ID вставить новые данные (если хотите просмотреть список, то введите \"-\"): ";
+            cin >> charid;
+            if (charid == "-")
+                ShowAllBegin(spisok, endsize);
+        } while (Correct_Number(charid) == -1);
+        ID = stoi(charid);
+        if (ID > endsize) {
+            cout << "Такого ID не существует...\n";
+            return;
+        }
+        CLS;
+        data.add_data();
+        CLS;
+    }
+    while (current && i <= endsize) {
+        i++;
+        if (i == ID) {
+            if (ID == endsize) {
+                spisok = add_begin(spisok, data);
+            }
+            else {
+                // Алгоритм добавление нового элемента
+                node* temp = new node;
+                temp->data = data;
+                temp->prev = current->prev;
+                temp->next = current;
+                current->prev = temp;
+                temp->prev->next = temp;
+            }
+            break;
+        }
+        current = spisok.end->prev;
+    }
+}
+
+void OrderAnimals(list& spisok, int& endsize, bool add) {
+    DataType data;
+    node* current = new node, * currenttwo = new node;
+    CLS;
+
+    if (!add) {
+        data.add_data();
+        spisok = add_begin(spisok, data);
+        endsize += 1;
+    }
+    current = spisok.begin;
+    if (current) {
+        // Цикл + вложенный цикл для сортировки списка методом пузырька (по возрастанию)
+
+        for (int i = 1; i <= endsize; i++) {
+            if (i == 1)
+                current = spisok.begin;
+            else {
+                current = current->next;
+            }
+            currenttwo = current;
+            for (int j = i + 1;
+                (j <= endsize); ++j) {
+                currenttwo = currenttwo->next;
+                if (current->data.sravnenieAnimals(currenttwo->data.animals) == 0) {
+                    data = currenttwo->data;
+                    currenttwo->data = current->data;
+                    current->data = data;
+                }
+            }
+        }
+    }
+    CLS;
+}
+void OrderZona(list& spisok, int& endsize, bool add) {
+    DataType data;
+    node* current = new node, * currenttwo = new node;
+    CLS;
+
+    if (!add) {
+        data.add_data();
+        spisok = add_begin(spisok, data);
+        endsize += 1;
+    }
+    current = spisok.begin;
+    if (current) {
+        // Цикл + вложенный цикл для сортировки списка методом пузырька (по возрастанию)
+        for (int i = 1; i <= endsize; i++) {
+            if (i == 1)
+                current = spisok.begin;
+            else {
+                current = current->next;
+            }
+            currenttwo = current;
+            for (int j = i + 1;
+                (j <= endsize); ++j) {
+                currenttwo = currenttwo->next;
+                if (current->data.sravnenieZona(currenttwo->data.natural_zone) == 0) {
+                    data = currenttwo->data;
+                    currenttwo->data = current->data;
+                    current->data = data;
+                }
+            }
+        }
+    }
+    CLS;
+}
+
+void OrderMoney(list& spisok, int& endsize, bool add) {
+    DataType data;
+    node* current = new node, * currenttwo = new node;
+    CLS;
+
+    if (!add) {
+        data.add_data();
+        spisok = add_begin(spisok, data);
+        endsize += 1;
+    }
+    current = spisok.begin;
+    if (current) {
+        // Цикл + вложенный цикл для сортировки списка методом пузырька (по возрастанию)
+        for (int i = 1; i <= endsize; i++) {
+            if (i == 1)
+                current = spisok.begin;
+            else {
+                current = current->next;
+            }
+            currenttwo = current;
+            for (int j = i + 1;
+                (j <= endsize); ++j) {
+                currenttwo = currenttwo->next;
+                if (current->data.sravnenieMoney(currenttwo->data.money) == 0) {
+                    data = currenttwo->data;
+                    currenttwo->data = current->data;
+                    current->data = data;
+                }
+            }
+        }
+    }
+    CLS;
+}
+
+void OrderCount(list& spisok, int& endsize, bool add) {
+    DataType data;
+    node* current = new node, * currenttwo = new node;
+    CLS;
+
+    if (!add) {
+        data.add_data();
+        spisok = add_begin(spisok, data);
+        endsize += 1;
+    }
+    current = spisok.begin;
+    if (current) {
+        // Цикл + вложенный цикл для сортировки списка методом пузырька (по возрастанию)
+        for (int i = 1; i <= endsize; i++) {
+            if (i == 1)
+                current = spisok.begin;
+            else {
+                current = current->next;
+            }
+            currenttwo = current;
+            for (int j = i + 1;
+                (j <= endsize); ++j) {
+                currenttwo = currenttwo->next;
+                if (current->data.sravnenieCount(currenttwo->data.cnt) == 0) {
+                    data = currenttwo->data;
+                    currenttwo->data = current->data;
+                    current->data = data;
+                }
+            }
+        }
+    }
+    CLS;
+}
+// Объявление функции добавления новых элементов
+void Add_Cur(list& spisok, int& endsize) {
+    char menu;
+    DataType data;
+    do {
+        CLS;
+        cout << " |-----------------------------|\n";
+        cout << " | Добавление в уп-ый список |\n";
+        cout << " |-----------------------------|\n\n";
+        cout << "Выберите тип упорядоченности: \n'I' - по ID\n'N' - по названию животного\n'P' - по природной зоне\n'M' - по затратам\n'C' - по количеству\n'X' - выход в меню\nВвод: ";
+        cin >> menu;
+    } while (menu != 'I' && menu != 'N' && menu != 'M' && menu != 'C' &&
+        menu != 'X' && menu != 'P');
+    switch (menu) {
+    case 'I':
+        OrderID(spisok, endsize);
+        endsize += 1;
+        cout << "Успешное добавление записи...\n";
+        break;
+    case 'N':
+        OrderAnimals(spisok, endsize, 0);
+        cout << "Успешное добавление записи...\n";
+        break;
+    case 'M':
+        OrderMoney(spisok, endsize, 0);
+        cout << "Успешное добавление записи...\n";
+        break;
+    case 'C':
+        OrderCount(spisok, endsize, 0);
+        cout << "Успешное	добавление записи...\n";
+        break;
+    case 'P':
+        OrderZona(spisok, endsize, 0);
+        cout << "Успешное добавление записи...\n";
+        break;
+    case 'X':
+        return;
+    default:
+        break;
+    }
+}
+int main(int argc, char* argv[]) {
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    string file_name; // Объявление переменной названия файла
+    list spisok;
+    make_null(&spisok); // Создание списка
+    DataType data;
+    if (argc < 2) {
+        file_name = FILE_NAME();
+    }
+    else {
+        file_name = argv[1];
+    }
+    ReadFile(spisok, file_name); // Вызов функции записи содержимого файла в список
+    char mainmenu = 0, secondmenu = 0;
+    int c = 0, q = 0;
+    do {
+        int endsize = CountData(spisok);
+        CLS;
+        cout << "Меню:\n'a' - добавление новых данных\n'r' - изменение данных\n'd' - удаление данных\n'o' - сортировка данных\n'f' - вывод количества животных определенной природной зоны \n'm' - вывод затрат на животных определенной природной зоны\n's' - вывод списка \n'e' - выйти из программы\n-----------\nКоличество записей : " << endsize << "\nВвод : ";
+        cin >> mainmenu;
+        switch (mainmenu) {
+        case 'a': {
+            do {
+                CLS;
+                cout << "Меню:\n'a' - добавление в конец списка\n'b' - рандомом в конец списка\n'd' - добавление в упорядоченный список\n'X' - выход в главное	меню\nВвод: ";
+                cin >> secondmenu;
+            } while (secondmenu != 'a' && secondmenu != 'b' && secondmenu != 'd' &&
+                secondmenu != 'X');
+            switch (secondmenu) {
+            case 'a':
+                CLS;
+                data.add_data();
+                spisok = add_begin(spisok, data);
+                CLS;
+                cout << "Успешное добавление записи...\n";
+                system("pause");
+                break;
+
+            case 'b':
+                CLS;
+                
+                cout << "Количество записей:";
+                cin >> c;
+                while (c!=q)
+                {
+                    data.add_data_random();
+                    spisok = add_begin(spisok, data);
+                    q++;
+                }
+                
+                CLS;
+                cout << "Успешное добавление записей...\n";
+                system("pause");
+                break;
+
+            case 'd':
+                CLS;
+                Add_Cur(spisok, endsize);
+                system("pause");
+                break;
+            case 'X':
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+        case 'r':
+            CLS;
+            Edit_Data(spisok, endsize);
+            system("pause");
+            break;
+        case 'f':
+            CLS;
+            FindAnimals(spisok);
+            system("pause");
+            break;
+        case 'm':
+            CLS;
+            Money_Natural_Zone(spisok);
+            system("pause");
+            break;
+        case 'd': {
+            do {
+                CLS;
+                cout << "Меню:\n'd' - удаление всего списка\n'e' - удаление одного элемента\n'X' - выход в главное меню\nВвод: ";
+                cin >> secondmenu;
+            } while (secondmenu != 'd' && secondmenu != 'e' &&
+                secondmenu != 'X');
+            switch (secondmenu) {
+            case 'X':
+                break;
+            case 'd':
+                CLS;
+                spisok = DellSpisok(spisok, file_name);
+                cout << "Все данные были удалены...\n";
+                system("pause");
+                break;
+            case 'e':
+                CLS;
+                Delete_One(spisok, &endsize, file_name);
+                system("pause");
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+        case 's': {
+            do {
+                CLS;
+                cout << "Меню:\n'>' - вывод по возврастанию\n'<' - вывод по убыванию\n'X' - выход в главное меню\nВвод: ";
+                cin >> secondmenu;
+            } while (secondmenu != '>' && secondmenu != '<' &&
+                secondmenu != 'X');
+            switch (secondmenu) {
+            case 'X':
+                break;
+            case '>':
+                CLS;
+                ShowAllBegin(spisok, endsize);
+                break;
+            case '<':
+                CLS;
+                ShowAllEnd(spisok, endsize);
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+        case 'o': {
+            do {
+                CLS;
+                cout << " |----------------|\n";
+                cout << " | Сортировка |\n";
+                cout << " |----------------|\n\n";
+                cout << "'N' - по названию животного\n'P' - по природной зоне\n'M' - по затратам\n'C' - по количеству\n'X' - выход в меню\nВвод:";
+                cin >> secondmenu;
+            } while (secondmenu != 'P' && secondmenu != 'N' &&
+                secondmenu != 'M' && secondmenu != 'C' && secondmenu != 'X');
+            switch (secondmenu) {
+            case 'P':
+                OrderZona(spisok, endsize, 1);
+                cout << "Данные были успешно отсортированы...\n";
+                system("pause");
+                break;
+            case 'N':
+                OrderAnimals(spisok, endsize, 1);
+                cout << "Данные были успешно отсортированы...\n";
+                system("pause");
+                break;
+            case 'M':
+                OrderMoney(spisok, endsize, 1);
+                cout << "Данные были успешно отсортированы...\n";
+                system("pause");
+                break;
+            case 'C':
+                OrderCount(spisok, endsize, 1);
+                cout << "Данные были успешно отсортированы...\n";
+                system("pause");
+                break;
+            case 'X':
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+        case 'e':
+            WriteSpisok(spisok, file_name);
+            break;
+        default:
+            break;
+        }
+    } while (mainmenu != 'e');
+
+    return 0;
+}

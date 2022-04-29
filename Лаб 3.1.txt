@@ -1,0 +1,77 @@
+//Перестановка элементов массива char, float в обратном порядке.
+
+#include <iostream>
+template <typename T> void invers(T* arr, int size)
+{
+	int i = 0;
+	for (i; i < size / 2 + 1; ++i)
+	{
+		std::swap(arr[i], arr[size - 1 - i]);
+	}
+}
+template <typename T> void inputArray(T* arr, int size)
+{
+	for (int i = 0; i < size; ++i)
+	{
+		std::cout << "Enter array, index = " << i << ": ";
+		std::cin >> arr[i];
+	}
+}
+template <typename T> void outputArray(T* arr, int size)
+{
+	for (int i = 0; i < size; ++i)
+	{
+		std::cout << arr[i] << " ";
+	}
+}
+int main()
+{
+	int sizeChar, sizeFloat;
+	char* arrChar;
+	float* arrFloat;
+	std::cout << "Enter value char array: ";
+	std::cin >> sizeChar;
+	std::cout << "Enter value float array: ";
+	std::cin >> sizeFloat;
+	system("cls");
+	try
+	{
+		if (sizeFloat <= 0 || sizeChar <= 0)
+		{
+			throw std::exception("The char(float) array contains 0 elements!");
+		}
+		arrChar = new char[sizeChar];
+		arrFloat = new float[sizeFloat];
+		std::cout << "Value char array: \n";
+		inputArray(arrChar, sizeChar);
+		system("cls");
+
+		std::cout << "Value float array: \n";
+		inputArray(arrFloat, sizeFloat);
+		system("cls");
+
+		std::cout << "Start char array: \n";
+		outputArray(arrChar, sizeChar);
+
+		std::cout << "\nStart float array: \n";
+		outputArray(arrFloat, sizeFloat);
+
+		invers(arrChar, sizeChar);
+		invers(arrFloat, sizeFloat);
+
+		std::cout << "\nNew char array: \n";
+		outputArray(arrChar, sizeChar);
+
+		std::cout << "\nNew float array: \n";
+		outputArray(arrFloat, sizeFloat);
+
+		delete[] arrChar;
+		delete[] arrFloat;
+	}
+
+	catch (const std::exception& ex)
+	{
+		std::cout << ex.what();
+	}
+	return 0;	
+}
